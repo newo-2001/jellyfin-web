@@ -17,7 +17,7 @@ class BackdropScreensaver {
             IncludeItemTypes: 'Movie,Series,MusicArtist',
             SortBy: 'Random',
             Recursive: true,
-            Fields: 'Taglines',
+            Fields: 'Taglines,Overview',
             ImageTypeLimit: 10,
             StartIndex: 0,
             Limit: 200
