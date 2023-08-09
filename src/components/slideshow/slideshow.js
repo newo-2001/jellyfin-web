@@ -413,7 +413,8 @@ export default function (options) {
         return getSwiperSlideHtmlFromSlide({
             originalImage: getImgUrl(item, currentOptions.user),
             Id: item.Id,
-            ServerId: item.ServerId
+            ServerId: item.ServerId,
+            title: item.Name
         });
     }
 
