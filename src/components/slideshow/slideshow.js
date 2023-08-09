@@ -347,7 +347,10 @@ export default function (options) {
         // eslint-disable-next-line import/no-unresolved
         import('swiper/bundle').then(({ Swiper }) => {
             swiperInstance = new Swiper(dialogElement.querySelector('.slideshowSwiperContainer'), {
-                direction: 'horizontal',
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
                 // Loop is disabled due to the virtual slides option not supporting it.
                 loop: false,
                 zoom: {
@@ -362,7 +365,7 @@ export default function (options) {
                 slidesPerView: 1,
                 slidesPerColumn: 1,
                 initialSlide: swiperOptions.startIndex || 0,
-                speed: 240,
+                speed: 1000,
                 navigation: {
                     nextEl: '.btnSlideshowNext',
                     prevEl: '.btnSlideshowPrevious'
