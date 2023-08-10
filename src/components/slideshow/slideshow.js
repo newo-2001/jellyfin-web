@@ -382,6 +382,14 @@ export default function (options) {
 
             swiperInstance.on('autoplayStart', onAutoplayStart);
             swiperInstance.on('autoplayStop', onAutoplayStop);
+            swiperInstance.on('slideChange', () => {
+                setTimeout(() => {
+                    const text = document.querySelector(".swiper-slide-visible .slideText");
+                    if (!text) return;
+                    
+                    text.style.opacity = 1;
+                }, 2000);
+            });
 
             if (useFakeZoomImage) {
                 swiperInstance.on('zoomChange', onZoomChange);
@@ -404,6 +412,19 @@ export default function (options) {
         }
     }
 
+    function getLogoUrl(item, user) {
+        const logoTag = item.ImageTags?.Logo;
+        if (!logoTag) return null;
+
+        const apiClient = ServerConnections.getApiClient(item.ServerId);
+        const options = {
+            type: 'Logo',
+            tag: logoTag
+        };
+
+        return apiClient.getImageUrl(item.Id, options);
+    }
+
     /**
      * Renders the HTML markup of a slide for an item.
      * @param {Object} item - Item used to generate the slide.
@@ -414,7 +435,8 @@ export default function (options) {
             originalImage: getImgUrl(item, currentOptions.user),
             Id: item.Id,
             ServerId: item.ServerId,
-            title: item.Name
+            title: item.Taglines[0],
+            logo: getLogoUrl(item)
         });
     }
 
@@ -432,8 +454,11 @@ export default function (options) {
         }
         html += '<img src="' + item.originalImage + '" class="swiper-slide-img">';
         html += '</div>';
-        if (item.title || item.subtitle) {
+        if (item.title || item.subtitle || item.logo) {
             html += '<div class="slideText">';
+            if (item.logo) {
+                html += `<div class="swiper-slide-logo-wrapper"><img src="${item.logo}" class="swiper-slide-logo"/></div>`;
+            }
             html += '<div class="slideTextInner">';
             if (item.title) {
                 html += '<h1 class="slideTitle">';
