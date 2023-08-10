@@ -102,23 +102,25 @@
 
 .slideText {
     position: absolute;
-    left: 10%;
+    display: flex;
+    flex-direction: column;
+    left: 10vw;
     right: 0;
     bottom: 10vh;
-    font-size: 1.6em;
-    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    font-family: 'Noto Sans';
+    color: white;
+    font-style: italic;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+    opacity: 0;
+    transition: opacity 1s ease;
 }
 
 .slideTextInner {
-    margin: 0 auto;
-    max-width: 60%;
-    display: inline-block;
-    padding: 0.5em 1em;
-    border-radius: 0.25em;
+    max-width: 90%;
 }
 
 .slideTitle {
-    margin: 0 0 0.25em;
+    margin: 2em 0 0.25em;
 }
 
 .slideSubtitle {
@@ -143,4 +145,17 @@
 
 .swiper-slide-img {
     width: 100%;
+}
+
+.swiper-slide-logo {
+    object-fit: contain;
+    object-position: left bottom;
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide-logo-wrapper {
+    width: 25vw;
+    height: 25vh;
+    position: relative;
 }
