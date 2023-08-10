@@ -1054,7 +1054,7 @@ function reload(context, itemId, serverId) {
         setFieldVisibilities(context, item);
         fillItemInfo(context, item, metadataEditorInfo.ParentalRatingOptions);
 
-        if (item.MediaType === 'Video' && item.Type !== 'Episode' && item.Type !== 'TvChannel') {
+        if ((item.MediaType === 'Video' && item.Type !== 'Episode' && item.Type !== 'TvChannel') || item.Type == "Series") {
             showElement('#fldTagline', context);
         } else {
             hideElement('#fldTagline', context);
