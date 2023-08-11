@@ -277,6 +277,8 @@ export default function (options) {
      * Handles OSD changes when the autoplay is started.
      */
     function onAutoplayStart() {
+        onSlideChange();
+
         const btnSlideshowPause = dialog.querySelector('.btnSlideshowPause .material-icons');
         if (btnSlideshowPause) {
             btnSlideshowPause.classList.replace('play_arrow', 'pause');
@@ -326,6 +328,15 @@ export default function (options) {
                 zoomImage.classList.add('swiper-zoom-fakeimg-hidden');
             }
         }
+    }
+
+    function onSlideChange() {
+        setTimeout(() => {
+            const text = document.querySelector('.swiper-slide-visible .slideText');
+            if (!text) return;
+
+            text.style.opacity = 1;
+        }, 2000);
     }
 
     /**
@@ -382,14 +393,7 @@ export default function (options) {
 
             swiperInstance.on('autoplayStart', onAutoplayStart);
             swiperInstance.on('autoplayStop', onAutoplayStop);
-            swiperInstance.on('slideChange', () => {
-                setTimeout(() => {
-                    const text = document.querySelector(".swiper-slide-visible .slideText");
-                    if (!text) return;
-                    
-                    text.style.opacity = 1;
-                }, 2000);
-            });
+            swiperInstance.on('slideChange', onSlideChange);
 
             if (useFakeZoomImage) {
                 swiperInstance.on('zoomChange', onZoomChange);
@@ -412,17 +416,15 @@ export default function (options) {
         }
     }
 
-    function getLogoUrl(item, user) {
+    function getLogoUrl(item) {
         const logoTag = item.ImageTags?.Logo;
         if (!logoTag) return null;
 
         const apiClient = ServerConnections.getApiClient(item.ServerId);
-        const options = {
+        return apiClient.getImageUrl(item.Id, {
             type: 'Logo',
             tag: logoTag
-        };
-
-        return apiClient.getImageUrl(item.Id, options);
+        });
     }
 
     /**
