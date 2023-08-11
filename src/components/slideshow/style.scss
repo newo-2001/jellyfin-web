@@ -104,13 +104,22 @@
     position: absolute;
     display: flex;
     flex-direction: column;
-    left: 10vw;
+    left: 6em;
     right: 0;
-    bottom: 10vh;
+    bottom: 6em;
     font-family: 'Noto Sans';
     color: white;
     font-style: italic;
-    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+    text-shadow: 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black;
     opacity: 0;
     transition: opacity 1s ease;
 }
@@ -120,7 +129,7 @@
 }
 
 .slideTitle {
-    margin: 2em 0 0.25em;
+    margin: 1em 0 0.25em;
 }
 
 .slideSubtitle {
