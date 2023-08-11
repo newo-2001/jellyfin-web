@@ -208,6 +208,11 @@
         <div class="fieldDescription">${LabelBackdropScreensaverIntervalHelp}</div>
     </div>
 
+    <div class="inputContainer inputContainer-withDescription">
+        <input is="emby-input" type="number" id="txtScreensaverTimeout" pattern="\\d*" required="required" min="1000" max="10000000" label="${ScreensaverTimeout}">
+        <div class="fieldDescription txt">${LabelScreensaverTimeoutHelp}</div>
+    </div>
+
     <div class="checkboxContainer checkboxContainer-withDescription">
         <label>
             <input type="checkbox" is="emby-checkbox" id="chkFadein" />

@@ -118,6 +118,8 @@ function loadForm(context, user, userSettings) {
     context.querySelector('#chkBackdrops').checked = userSettings.enableBackdrops();
     context.querySelector('#chkDetailsBanner').checked = userSettings.detailsBanner();
 
+    context.querySelector('#txtScreensaverTimeout').value = userSettings.screensaverTimeout();
+
     context.querySelector('#chkDisableCustomCss').checked = userSettings.disableCustomCss();
     context.querySelector('#txtLocalCustomCss').value = userSettings.customCss();
 
@@ -152,6 +154,7 @@ function saveUser(context, user, userSettingsInstance, apiClient) {
     userSettingsInstance.dashboardTheme(context.querySelector('#selectDashboardTheme').value);
     userSettingsInstance.screensaver(context.querySelector('.selectScreensaver').value);
     userSettingsInstance.backdropScreensaverInterval(context.querySelector('#txtBackdropScreensaverInterval').value);
+    userSettingsInstance.screensaverTimeout(context.querySelector('#txtScreensaverTimeout').value);
 
     userSettingsInstance.libraryPageSize(context.querySelector('#txtLibraryPageSize').value);
 
