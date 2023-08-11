@@ -46,11 +46,16 @@ function getScreensaverPlugin(isLoggedIn) {
     return null;
 }
 
-function ScreenSaverManager() {
-    let activeScreenSaver;
+class ScreenSaverManager {
+    constructor() {
+        this.activeScreenSaver = null;
+        this.listeners = {};
 
-    function showScreenSaver(screensaver) {
-        if (activeScreenSaver) {
+        setInterval(this.onInterval.bind(this), Math.floor(getMinIdleTime() / 10));
+    }
+
+    showScreenSaver(screensaver) {
+        if (this.activeScreenSaver) {
             throw new Error('An existing screensaver is already active.');
         }
 
@@ -59,38 +64,44 @@ function ScreenSaverManager() {
         document.body.classList.add('screensaver-noScroll');
 
         screensaver.show();
-        activeScreenSaver = screensaver;
+        this.activeScreenSaver = screensaver;
 
         if (screensaver.hideOnClick !== false) {
-            window.addEventListener('click', hide, true);
+            this.listeners['click'] = this.hide.bind(this);
+            window.addEventListener('click', this.listeners['click'], true);
         }
         if (screensaver.hideOnMouse !== false) {
-            window.addEventListener('mousemove', hide, true);
+            this.listeners['mousemove'] = this.hide.bind(this);
+            window.addEventListener('mousemove', this.listeners['mousemove'], true);
         }
         if (screensaver.hideOnKey !== false) {
-            window.addEventListener('keydown', hide, true);
+            this.listeners['keydown'] = this.hide.bind(this);
+            window.addEventListener('keydown', this.listeners['keydown'], true);
         }
     }
 
-    function hide() {
-        if (activeScreenSaver) {
+    hide() {
+        if (this.activeScreenSaver) {
             console.debug('Hiding screensaver');
-            activeScreenSaver.hide().then(() => {
+            this.activeScreenSaver.hide().then(() => {
                 document.body.classList.remove('screensaver-noScroll');
             });
-            activeScreenSaver = null;
+            this.activeScreenSaver = null;
         }
 
-        window.removeEventListener('click', hide, true);
-        window.removeEventListener('mousemove', hide, true);
-        window.removeEventListener('keydown', hide, true);
+        for (const event in this.listeners) {
+            const listener = this.listeners[event];
+            window.removeEventListener(event, listener, true);
+        }
+
+        this.listeners = {};
     }
 
-    this.isShowing = () => {
-        return activeScreenSaver != null;
-    };
+    isShowing() {
+        return this.activeScreenSaver != null;
+    }
 
-    this.show = function () {
+    show() {
         let isLoggedIn;
         const apiClient = ServerConnections.currentApiClient();
 
@@ -101,15 +112,11 @@ function ScreenSaverManager() {
         const screensaver = getScreensaverPlugin(isLoggedIn);
 
         if (screensaver) {
-            showScreenSaver(screensaver);
+            this.showScreenSaver(screensaver);
         }
-    };
+    }
 
-    this.hide = function () {
-        hide();
-    };
-
-    const onInterval = () => {
+    onInterval() {
         if (this.isShowing()) {
             return;
         }
@@ -127,9 +134,7 @@ function ScreenSaverManager() {
         }
 
         this.show();
-    };
-
-    setInterval(onInterval, 5000);
+    }
 }
 
 export default new ScreenSaverManager;
