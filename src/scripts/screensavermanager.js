@@ -65,7 +65,6 @@ class ScreenSaverManager {
 
         screensaver.show();
         this.activeScreenSaver = screensaver;
-        console.log(this);
 
         if (screensaver.hideOnClick !== false) {
             this.listeners['click'] = this.hide.bind(this);

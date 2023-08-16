@@ -15,6 +15,7 @@ import '../../elements/emby-button/paper-icon-button-light';
 import ServerConnections from '../ServerConnections';
 import screenfull from 'screenfull';
 import { randomInt } from '../../utils/number.ts';
+import * as userSettings from '../../scripts/settings/userSettings';
 
 /**
  * Name of transition event.
@@ -138,6 +139,18 @@ export default function (options) {
     let hideTimeout;
     /** Last coordinates of the mouse pointer. */
     let lastMouseMoveData;
+    /** Timeout for clock*/
+    let clockIntervalHandle;
+
+    function onClock(currentTime) {
+        const locale = userSettings.language() || 'en-US';
+
+        const time = currentTime.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false });
+        document.querySelector('.swiper-clock-time').innerHTML = time;
+
+        const date = currentTime.toLocaleDateString(locale, { weekday: 'short', month: 'long', day: 'numeric' });
+        document.querySelector('.swiper-clock-date').innerHTML = date;
+    }
 
     /**
      * Creates the HTML markup for the dialog and the OSD.
@@ -159,7 +172,13 @@ export default function (options) {
 
         let html = '';
 
-        html += '<div class="slideshowSwiperContainer"><div class="swiper-wrapper"></div></div>';
+        html += '<div class="slideshowSwiperContainer">';
+        html += '<div class="swiper-wrapper"></div>';
+        html += '<div class="swiper-clock">';
+        html += '<span class="swiper-clock-date"></span>';
+        html += '<span class="swiper-clock-time"></span>';
+        html += '</div>';
+        html += '</div>';
 
         if (slideshowOptions.interactive && !layoutManager.tv) {
             const actionButtonsOnTop = layoutManager.mobile;
@@ -271,6 +290,12 @@ export default function (options) {
         if (btnSlideshowPrevious) btnSlideshowPrevious.classList.add('hide');
         const btnSlideshowNext = dialog.querySelector('.btnSlideshowNext');
         if (btnSlideshowNext) btnSlideshowNext.classList.add('hide');
+
+        const millisTillNewMinute = (60 - new Date().getSeconds()) * 1000;
+        setTimeout(() => {
+            clockIntervalHandle = setInterval(() => onClock(new Date()), 60 * 1000);
+        }, millisTillNewMinute);
+        onClock(new Date());
     }
 
     /**
@@ -601,6 +626,9 @@ export default function (options) {
         inputManager.off(window, onInputCommand);
         /* eslint-disable-next-line compat/compat */
         document.removeEventListener((window.PointerEvent ? 'pointermove' : 'mousemove'), onPointerMove);
+
+        console.log(`Clearing interval timer: ${clockIntervalHandle}`);
+        if (clockIntervalHandle) clearInterval(clockIntervalHandle);
     }
 
     /**
