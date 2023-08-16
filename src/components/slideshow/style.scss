@@ -168,3 +168,34 @@
     height: 25vh;
     position: relative;
 }
+
+.swiper-clock {
+    text-align: center;
+    z-index: 1;
+    font-size: 1.7em;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 1.5em;
+    right: 1.5em;
+    color: white;
+    font-family: 'Noto Sans';
+    text-shadow: 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black,
+                 0 0 4px black;
+}
+
+.swiper-clock-date {
+    font-size: 0.7em;
+}
+
+.swiper-clock-time {
+    font-size: 2em;
+}
