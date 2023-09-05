@@ -462,7 +462,7 @@ export default function (options) {
             originalImage: getImgUrl(item, currentOptions.user),
             Id: item.Id,
             ServerId: item.ServerId,
-            title: item.Taglines[0],
+            title: item?.Taglines[0],
             logo: getLogoUrl(item)
         });
     }
