@@ -139,8 +139,10 @@ export default function (options) {
     let hideTimeout;
     /** Last coordinates of the mouse pointer. */
     let lastMouseMoveData;
-    /** Timeout for clock*/
+    /** Interval for clock*/
     let clockIntervalHandle;
+    /** Initial timeout for clock */
+    let clockTimeoutHandle;
 
     function onClock(currentTime) {
         const locale = userSettings.language() || 'en-US';
@@ -292,7 +294,8 @@ export default function (options) {
         if (btnSlideshowNext) btnSlideshowNext.classList.add('hide');
 
         const millisTillNewMinute = (60 - new Date().getSeconds()) * 1000;
-        setTimeout(() => {
+        clockTimeoutHandle = setTimeout(() => {
+            clockTimeoutHandle = null;
             clockIntervalHandle = setInterval(() => onClock(new Date()), 60 * 1000);
         }, millisTillNewMinute);
         onClock(new Date());
@@ -627,8 +630,8 @@ export default function (options) {
         /* eslint-disable-next-line compat/compat */
         document.removeEventListener((window.PointerEvent ? 'pointermove' : 'mousemove'), onPointerMove);
 
-        console.log(`Clearing interval timer: ${clockIntervalHandle}`);
         if (clockIntervalHandle) clearInterval(clockIntervalHandle);
+        if (clockTimeoutHandle) clearTimeout(clockTimeoutHandle);
     }
 
     /**
