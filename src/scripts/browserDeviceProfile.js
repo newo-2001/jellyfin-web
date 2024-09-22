@@ -242,16 +242,16 @@ function supportedDolbyVisionProfilesHevc(videoTestElement) {
     if (browser.xboxOne) return [5, 8];
 
     const supportedProfiles = [];
-    // Profiles 5/8 4k@60fps
+    // Profiles 5/8 4k@24fps
     if (videoTestElement.canPlayType) {
         if (videoTestElement
-            .canPlayType('video/mp4; codecs="dvh1.05.09"')
+            .canPlayType('video/mp4; codecs="dvh1.05.06"')
             .replace(/no/, '')) {
             supportedProfiles.push(5);
         }
         if (
             videoTestElement
-                .canPlayType('video/mp4; codecs="dvh1.08.09"')
+                .canPlayType('video/mp4; codecs="dvh1.08.06"')
                 .replace(/no/, '')
             // LG TVs from at least 2020 onwards should support profile 8, but they don't report it.
             || (browser.web0sVersion >= 4)
@@ -875,17 +875,45 @@ export default function (options) {
         });
     }
 
+    const globalAudioCodecProfileConditions = [];
+    const globalVideoAudioCodecProfileConditions = [];
+
+    if (parseInt(userSettings.allowedAudioChannels(), 10) > 0) {
+        globalAudioCodecProfileConditions.push({
+            Condition: 'LessThanEqual',
+            Property: 'AudioChannels',
+            Value: physicalAudioChannels.toString(),
+            IsRequired: false
+        });
+
+        globalVideoAudioCodecProfileConditions.push({
+            Condition: 'LessThanEqual',
+            Property: 'AudioChannels',
+            Value: physicalAudioChannels.toString(),
+            IsRequired: false
+        });
+    }
+
     if (!supportsSecondaryAudio) {
+        globalVideoAudioCodecProfileConditions.push({
+            Condition: 'Equals',
+            Property: 'IsSecondaryAudio',
+            Value: 'false',
+            IsRequired: false
+        });
+    }
+
+    if (globalAudioCodecProfileConditions.length) {
+        profile.CodecProfiles.push({
+            Type: 'Audio',
+            Conditions: globalAudioCodecProfileConditions
+        });
+    }
+
+    if (globalVideoAudioCodecProfileConditions.length) {
         profile.CodecProfiles.push({
             Type: 'VideoAudio',
-            Conditions: [
-                {
-                    Condition: 'Equals',
-                    Property: 'IsSecondaryAudio',
-                    Value: 'false',
-                    IsRequired: false
-                }
-            ]
+            Conditions: globalVideoAudioCodecProfileConditions
         });
     }
 

@@ -1,14 +1,8 @@
 import { playbackManager } from '../components/playback/playbackmanager';
-import ServerConnections from '../components/ServerConnections';
 import Events from '../utils/events.ts';
 
-export function supported() {
-    return typeof(Storage) !== 'undefined';
-}
-
 export function enable(enabled) {
-    if (!supported()) return;
-
+    console.debug('[autocast] %s cast player', enabled ? 'enabling' : 'disabling');
     if (enabled) {
         const currentPlayerInfo = playbackManager.getPlayerInfo();
 
@@ -21,8 +15,6 @@ export function enable(enabled) {
 }
 
 export function isEnabled() {
-    if (!supported()) return false;
-
     const playerId = localStorage.getItem('autocastPlayerId');
     const currentPlayerInfo = playbackManager.getPlayerInfo();
 
@@ -31,23 +23,36 @@ export function isEnabled() {
 
 function onOpen() {
     const playerId = localStorage.getItem('autocastPlayerId');
+    if (!playerId) {
+        console.debug('[autocast] no active cast player');
+        return;
+    }
+
+    console.debug('[autocast] initializing cast player', playerId);
 
     playbackManager.getTargets().then(function (targets) {
-        for (const target of targets) {
-            if (target.id == playerId) {
-                playbackManager.trySetActivePlayer(target.playerName, target);
-                break;
-            }
+        console.debug('[autocast] playback targets', targets);
+
+        const player = targets.find(target => target.id === playerId);
+        if (player) {
+            console.debug('[autocast] found target player', player);
+            playbackManager.trySetActivePlayer(player.playerName, player);
+        } else {
+            console.debug('[autocast] selected cast player not found');
         }
     });
 }
 
-try {
-    const apiClient = ServerConnections.currentApiClient();
-
-    if (apiClient && supported()) {
-        Events.on(apiClient, 'websocketopen', onOpen);
+export function initialize(apiClient) {
+    if (apiClient) {
+        if (apiClient.isWebSocketOpen()) {
+            console.debug('[autoCast] connection ready');
+            onOpen();
+        } else {
+            console.debug('[autoCast] initializing connection listener');
+            Events.on(apiClient, 'websocketopen', onOpen);
+        }
+    } else {
+        console.warn('[autoCast] cannot initialize missing apiClient');
     }
-} catch (ex) {
-    console.warn('Could not get current apiClient', ex);
 }
