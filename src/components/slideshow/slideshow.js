@@ -361,9 +361,10 @@ export default function (options) {
     function onSlideChange() {
         setTimeout(() => {
             const text = document.querySelector('.swiper-slide-visible .slideText');
-            if (!text) return;
+            if (text) text.style.opacity = 1;
 
-            text.style.opacity = 1;
+            const prevText = document.querySelector('.swiper-slide-prev .slideText');
+            if (prevText) prevText.style.opacity = 0;
         }, 2000);
     }
 
@@ -391,7 +392,7 @@ export default function (options) {
                     crossFade: true
                 },
                 // Loop is disabled due to the virtual slides option not supporting it.
-                loop: false,
+                loop: true,
                 zoom: {
                     minRatio: 1,
                     toggle: true
