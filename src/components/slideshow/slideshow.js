@@ -493,7 +493,7 @@ export default function (options) {
             html += '<div class="slideTextInner">';
             if (item.title) {
                 html += '<h1 class="slideTitle">';
-                html += item.title;
+                html += item.title + (Math.random() < 0.01 ? ' And a toilet seat.' : '');
                 html += '</h1>';
             }
             if (item.description) {
